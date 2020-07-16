@@ -15,7 +15,7 @@
 
 	``` c++
 	int c = (6 & 4 == 4);	// (6 & 1) == 0
-	int d = ((6 & 4) == 4);	// (4 == 4) == 1
+	int d = ((6 & 4) == 4);// (4 == 4) == 1
 	```
 
 - Overflow
@@ -69,20 +69,20 @@
 	``` c++
 	int added = (a | b);			// union
 	int intersection = (a & b);		// intersection
-	int removed = (a & ~b);			// difference of sets
+	int removed = (a & ~b);		// difference of sets
 	int toggled = (a ^ b);			// union - intesection
 	```
 
 - Get the number of 1 (up-bit)
-	- gcc/g++: `__builtin_popcount(bitset)`
-	- Visual C++: `__popcnt(bitset)`
-	- Java: `Integer.bitCount(bitset)`
+	- gcc/g++: [`__builtin_popcount(bitset)`]()
+	- Visual C++: [`__popcnt(bitset)`]()
+	- Java: [`Integer.bitCount(bitset)`]()
 
 - Get the minimum element, the right-most 1 bit
 	- Counts how many 0 bit the end of the binary format of bitset has.
-	- gcc/g++: `__builtin_ctz(bitset)`
-	- Visual C++: `__BitScanForward(&index, bitset)`
-	- Java: `Integer.numberOfTrailingZeros(bitset)`
+	- gcc/g++: [`__builtin_ctz(bitset)`]()
+	- Visual C++: [`__BitScanForward(&index, bitset)`]()
+	- Java: [`Integer.numberOfTrailingZeros(bitset)`]()
 	- Using Two's complement
 
 		``` c++
