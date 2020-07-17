@@ -100,3 +100,17 @@
 	}
 	// Notice that empty set is not visited.
 	```
+- Define an array of range, [0, 15], as only one `unsigned long long` type
+
+	``` c++
+	typedef unsigned long long uint64;
+	// Return the value of the index in mask.
+	int get(uint64 mask, int index) {
+		return (mask >> (index << 2)) & 15;
+	}
+	// Return the conversion from the index to the value.
+	uint64 set(uint64 mask, int index, uint64 value) {
+		return mask & ~(15LL << (index <<2)) | (value << (index << 2));
+	}
+	```
+
