@@ -37,7 +37,7 @@ int getMaximumCount(vector<pair<int,int> > &orders, int pos, int a, int b) {
 
 // Return the number of method dividing toys to children fairly.
 // Condition: (psum[b] - psum[a-1]) % K = 0 --> psum[b] % K == psum[a-1] % K --> psum[i] is defined as `(sum of range [0,i]) % K`
-int waysToBuy(const vector<int> &psum) {
+int waysToBuy(const vector<int> &psum) { // O(N+K)
 	int ret = 0;
 	vector<long long> count(K, 0);
 	for (int i=0; i<psum.size(); i++) {
@@ -54,7 +54,7 @@ int waysToBuy(const vector<int> &psum) {
 }
 
 // DP
-int maxBuys(const vector<int> &psum) {
+int maxBuys(const vector<int> &psum) { // O(N+K)
 	// ret[i] = the maximum count of buying in the range [0,i]
 	vector<int> ret(psum.size(), 0);
 	// prev[s] = the last position when psum[] equals to s
