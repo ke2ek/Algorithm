@@ -52,6 +52,7 @@
 	```
 
 - The Dynamic Array is **different** from a dynamically allocated array that is generated with `new` operator.
+- There is a library implementing the dynamic array in C++. i.e. [STL Container `vector<T>`](http://www.cplusplus.com/reference/vector/vector/)
 
 
 ## Linked List
