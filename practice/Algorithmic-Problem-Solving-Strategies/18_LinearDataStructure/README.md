@@ -96,4 +96,5 @@
 	```
 
 - But getting the size of a list and finding a specific node can be done in O(N) in case N is the number of nodes.
+- There is a library implementing the linked list in C++. i.e. [STL Container `list<T>`](http://www.cplusplus.com/reference/list/list/).
 
