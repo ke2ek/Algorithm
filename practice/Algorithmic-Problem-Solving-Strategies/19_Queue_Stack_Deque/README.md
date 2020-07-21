@@ -14,22 +14,22 @@
 	---------------- 
 	| A | B |
 	----------------
-			^
-			top
+		^
+		top
 
 	push(C);
 	---------------- 
 	| A | B | C |
 	----------------
-				^
-				top
+		    ^
+		    top
 
 	pop();
 	---------------- 
 	| A | B |
 	----------------
-			^
-			top
+		^
+		top
 	```
 
 - In C++, there is the library [`stack<T>`](http://www.cplusplus.com/reference/stack/stack/).
@@ -43,21 +43,21 @@
 	---------------- 
 	| A | B |
 	----------------
-	^		^
+	^	^
 	front	back
 
 	push(C);
 	---------------- 
 	| A | B | C |
 	----------------
-	^			^
-	front		back
+	^	    ^
+	front	    back
 
 	pop();
 	---------------- 
 	| B | C |
 	----------------
-	^		^
+	^	^
 	front	back
 	```
 
@@ -73,21 +73,21 @@
 	---------------- 
 	| A | B |
 	----------------
-	^		^
+	^	^
 	front	back
 
 	push_front(C);
 	---------------- 
 	| C | A | B |
 	----------------
-	^			^
-	front		back
+	^	    ^
+	front	    back
 
 	pop_back();
 	---------------- 
 	| C | A |
 	----------------
-	^		^
+	^	^
 	front	back
 
 	pop_front();
@@ -95,6 +95,6 @@
 	| A |
 	----------------
 	^	^
-	frt bak
+	front   back
 	```
 
