@@ -1,6 +1,6 @@
 # String
 
-## Search substring: Find a needle in a haystack
+## Find a needle in a haystack
 
 - ex) Assume that two strings, H="hogwarts" and N="gwart".
 	- String H (haystack) has N (needle) as substring.
@@ -112,3 +112,124 @@
 		}
 		```
 		
+	- Proof of Concept: [poc.cpp](./poc.cpp)
+
+
+## Circular Shift
+
+- ver KMP Algorithm Application.
+- shifts(original, target) = return how many shifts does it require to change from _original_ to _target_.
+	- for left-shift, call shifts(original, target).
+	- for right-shift, call shifts(target, original).
+
+	``` c++
+	int shifts(const string &original, const string &target) {
+		return kmpSearch(original + original, target)[0];
+	}
+	```
+
+
+## [Suffix Array](https://en.wikipedia.org/wiki/Suffix_array)
+
+- A sorted array of all suffixes of a string.
+- Algorithm
+	1. Get beginning indexes of all suffixes in a string S.
+		- Let's call `i` the index. i.e. S[i...] is the i-th suffix.
+	2. Arrange the suffixes in alphabetical order.
+	3. Save the order of indexes after sorting.
+		- i.e. A[j] = the beginning position of the j-th suffix after sorting
+- It is used to search for a substring by taking advantage of the string N is the prefix of a substring, a suffix of the string H, if N is included in H.
+- Naive method generating the suffix array.
+	- Given a string like "aaa...aaa", the time complexity is O(n^2 * lg(n)) in case n is the length of given string.
+	
+	``` c++
+	// Given i, j are the beginning position of two suffixes,
+	// Compare i with j.
+	struct SuffixComparator {
+		const string& s;
+		SuffixComparator(const string& s) : s(s) {}
+		bool operator () (int i, int j) {
+			// Save the cost to generate temporary objects.
+			return strcmp(s.c_str() + i, s.c_str() + j) < 0;
+		}
+	};
+
+	// Generate the Suffix Array.
+	vector<int> getSuffixArrayNavie(const string& s) {
+		vector<int> perm; // the beginning positions of each suffix
+		for (int i = 0; i < s.size(); i++) perm.push_back(i);
+		// Sort by alphabetical order
+		sort(perm.begin(), perm.end(), SuffixComparator(s));
+		return perm;
+	}
+	```
+
+- [Manber-Myers Algorithm](https://www.geeksforgeeks.org/suffix-array-set-1-introduction/)
+	- Naive algorithm spend time a lot. Also, the more efficient algorithm is so hard to implement during the given time in a programming competition.
+	- Notice that Manber-Myers Algorithm is more simple and efficient than.
+	- The idea is to consider about **how many letters to sort the suffixes**.
+		- First, sort by suffixes based on the only first letter.
+		- Second, sort by suffixes based on two letters.
+		- Next, keep sorting by multiplying 2 to the number of letters to compare.
+	- By using order information of the suffixes gotten from the previous sorting, comparison time is O(1).
+	- That's why this works faster than the naive method although it require to sort many times.
+	- After generating the suffix array,
+		- Group by the first _t_ letters of suffixes.
+		- group[i] = the number of group that S[i...] belongs to
+		- Visit the suffixes from the front, and assign group numbers to each suffix.
+		
+	``` c++
+	// Given group number based on the first t letters of each suffix,
+	// compare given two suffixes by the first 2*t letters.
+	// group[] includes a zero-length suffix.
+	struct Comparator {
+		const vector<int> &group;
+		int t;
+		Comparator(const vector<int> &_group, int _t): group(_group), t(_t) {
+			group = _group;
+			t = _t;
+		}
+		bool operator() (int a, int b) {
+			// if the first t letters are different,
+			if (group[a] != group[b]) return group[a] < group[b];
+			// if not, then compare the first t letters of S[a+t...] and S[b+t...].
+			return group[a+t] < group[b+t];
+		}
+	};
+	```
+
+	- Note that it does not check whether it is out of range of an array in case of group[a+t] and group[b+t]. 
+		- Comparing the first t letters means that two suffixes are always longer than t.
+	
+	``` c++
+	vector<int> getSuffixArray(const string &s) {
+		int n = s.size();
+		int t = 1;
+		vector<int> group(n+1);
+		for (int i = 0; i < n; i++) group[i] = s[i];
+		group[n] = -1;
+		vector<int> perm(n);
+		for (int i = 0; i < n; i++) perm[i] = i; // suffix array
+		while (t < n) {
+			// group[] have been operated based on the first t letters.
+			// Sort `perm` again based on the first 2*t letters.
+			Comparator compareUsing2T(group, t);
+			sort(perm.begin(), perm.end(), compareUsing2T);
+			t *= 2;
+			if (t >= n) break;
+			// Group by the first 2*t letters.
+			vector<int> newGroup(n+1);
+			newGroup[n] = -1;
+			newGroup[perm[0]] = 0;
+			for (int i = 1; i < n; i++) {
+				if (compareUsing2T(perm[i-1], perm[i]))
+					newGroup[perm[i]] = newGroup[perm[i-1]] + 1;
+				else
+					newGroup[perm[i]] = newGroup[perm[i-1]];
+			}
+			group = newGroup
+		}
+		return perm;
+	}
+	```
+
