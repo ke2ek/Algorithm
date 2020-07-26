@@ -37,7 +37,8 @@
 			- Let's call it sub-prefix.
 		- Assume that two characters are different at `begin + matched`.
 		- If there is a suffix same as the sub-prefix of N in the substring H[begin...begin+matched-1],
-			- Start to compare at the index `begin + matched - the length of the suffix`.
+			- Start to compare at the index `begin + matched - the length of the suffix == begin + matched - pi[matched - 1]`.
+			- It means to did discover the suffix, which has the maximum length, in the string N[...matched-1].
 		- Based on this idea, define pi[i] as the maximum length of a string which is both a prefix and a suffix.
 			- Let's call pi[] partial-match-table.
 
@@ -57,7 +58,8 @@
 					else {
 						// N[...matched-1] is the same as the suffix of a substring of H.
 						begin += matched - pi[matched - 1];
-						matched = pi[matched-1];
+						// Notice that comparison does not start at 0 in the substring N[...matched-1].
+						matched = pi[matched - 1];
 					}
 				}
 			}
