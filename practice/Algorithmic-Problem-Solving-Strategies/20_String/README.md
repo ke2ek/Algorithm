@@ -233,3 +233,48 @@
 	}
 	```
 
+	- Example: Circular String
+		- Given a circular string connected the beginning and end can be read clockwise and N is the length of the string, the number of methods to read is N.
+		- What is the string most front by alphabetical order?
+		- Notice that the string which is made of repeating the original string 2 times includes all strings from N methods.
+
+		``` c++
+		// O(n * (lg(n))^2)
+		string minShift(const string &s) {
+			string s2 = s + s;
+			vector<int> a = getSuffixArray(s2);
+			for (int i = 0; i < a.size(); i++) {
+				if (a[i] <= s.size())
+					return s2.substr(a[i], s.size());
+			}
+			return "__oops__";
+		}
+		```
+
+	- Example: Count the number of different substrings
+		- Notice that all substrings of S are corresponding to prefixes of all suffixes in S.
+		
+		``` c++
+		// Calculate the length of common prefix of bothn S[i...] and S[j...].
+		int commonPrefix(const string &s, int i, int j) {
+			int k = 0;
+			while (i < s.size() && j < s.size() && s[i] == s[j]) {
+				i++; j++; k++;
+			}
+			return k;
+		}
+
+		// Count all different substrings of S.
+		int countSubstrings(const string &s) {
+			vector<int> a = getSuffixArray(s);
+			int ret = 0;
+			int n = s.size();
+			for (int i = 0; i < a.size(); i++) {
+				int cp = 0;
+				if (i > 0) cp = commonPrefix(s, a[i-1], a[i]);
+				ret += n - a[i] - cp;
+			}
+			return ret;
+		}
+		```
+
