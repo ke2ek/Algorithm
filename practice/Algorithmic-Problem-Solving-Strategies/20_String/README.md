@@ -183,9 +183,9 @@
 	// compare given two suffixes by the first 2*t letters.
 	// group[] includes a zero-length suffix.
 	struct Comparator {
-		const vector<int> &group;
+		vector<int> &group;
 		int t;
-		Comparator(const vector<int> &_group, int _t): group(_group), t(_t) {
+		Comparator(vector<int> &_group, int _t): group(_group), t(_t) {
 			group = _group;
 			t = _t;
 		}
@@ -227,7 +227,7 @@
 				else
 					newGroup[perm[i]] = newGroup[perm[i-1]];
 			}
-			group = newGroup
+			group = newGroup;
 		}
 		return perm;
 	}
