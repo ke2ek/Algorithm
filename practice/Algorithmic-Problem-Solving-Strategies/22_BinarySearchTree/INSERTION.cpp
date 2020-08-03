@@ -1,4 +1,6 @@
+// https://algospot.com/judge/problem/read/INSERTION
 #include <iostream>
+#include <vector>
 #include <cstdlib>
 #include <ctime>
 using namespace std;
@@ -104,44 +106,38 @@ Node* kth(Node* root, int k) {
 }
 
 
-// Count the number of nodes to have a key less than X.
-int countLessThan(Node* root, KeyType key) {
-    if (root == 0) return 0;
-    if (root->key >= key) {
-        return countLessThan(root->left, key);
+int N;
+int shifted[50000]; // shifted[i] = how many times move A[i]
+int A[50000];
+
+void solve() {
+    cin >> N;
+    for (int i=0; i<N; i++)
+        cin >> shifted[i];
+    
+    Node* candidates = 0;
+    for (int i=0; i<N; i++)
+        candidates = insert(candidates, new Node(i+1));
+    
+    for (int i=N-1; i>=0; i--) {
+        int larger = shifted[i];
+        Node* k = kth(candidates, i + 1 - larger);
+        A[i] = k->key;
+        candidates = erase(candidates, k->key);
     }
-    int ls = (root->left ? root->left->size : 0);
-    return ls + 1 + countLessThan(root->right, key);
-}
-
-
-void print(Node* root, int indent) {
-    if (root == 0) return;
-    for (int i=0; i<indent; i++) cout << "  ";
-    cout << root->key << " (" << root->priority << ")" << endl;
-    print(root->left, indent+1);
-    print(root->right, indent+1);
+    
+    for (int i=0; i<N; i++)
+        cout << A[i] << " ";
+    cout << endl;
 }
 
 
 int main() {
     srand(time(0));
-    KeyType keys[] = {1,2,3,4,5,6,7};
-    Node* root = 0;
-    for (int i=0; i<7; i++) {
-        root = insert(root, new Node(keys[i]));
+    int T;
+    cin >> T;
+    while (T--) {
+        solve();
     }
-    cout << "Before:" << endl;
-    print(root, 0);
-    cout << "After erasing 4" << endl;
-    root = erase(root, 4);
-    print(root, 0);
-    cout << "After erasing 7" << endl;
-    root = erase(root, 7);
-    print(root, 0);
-    
-     Node* found = kth(root, 3);
-     cout << "Found the 3-th node!! key = " << found->key << endl;
-     cout << "# of nodes (key < 4) = " << countLessThan(root, 4) << endl;
     return 0;
 }

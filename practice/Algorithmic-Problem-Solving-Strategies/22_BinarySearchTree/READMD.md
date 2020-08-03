@@ -247,9 +247,8 @@
 	Node* kth(Node* root, int k) {
 		int leftSize = 0; // First, calculate the size of left subtree.
 		if (root->left != 0) leftSize = root->left->size;
-		if (leftSize == 0) return root;
 		if (k <= leftSize) return kth(root->left, k);
-		if (k == leftSize - 1) return root;
+		if (k == leftSize + 1) return root;
 		return kth(root->right, k - leftSize - 1);
 	}
 	```
