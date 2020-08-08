@@ -2,7 +2,7 @@
 
 ## Find a needle in a haystack
 
-- ex) Assume that two strings, H="hogwarts" and N="gwart".
+- Example: Assume that two strings, H="hogwarts" and N="gwart".
 	- String H (haystack) has N (needle) as substring.
 	- The position which N starts at in H is 2. i.e. H[2...]="gwarts"
 
