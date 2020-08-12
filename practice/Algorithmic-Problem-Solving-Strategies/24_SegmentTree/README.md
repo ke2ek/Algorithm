@@ -125,3 +125,57 @@
 	}
 	```
 
+
+## [Fenwick Tree or Binary Indexed Tree](https://en.wikipedia.org/wiki/Fenwick_tree)
+
+- It is used to calculate **range sum** fastly using **partial sum**.
+- Also, it saves memory space than the Segment Tree.
+	- In the Segment Tree, each parent node requires both children to calculate the sum of their own range.
+	- But, in a Fenwick Tree, the sum of range [i, j] can be calculated by subtracting psum[i-1] from psum[j], where _psum[i]_ is the partial sum from 0 to i.
+	- It means to need only one subtree to calculate the sum of its own range.
+- Since the subtrees differ by two times each, it is easy and fast to find the upper or lower section by expressing the index of a range in binary numbers.
+- Example
+	- Notice that the range to be added can be found by subtracting the last 1 bit (LSB) of each binary number.
+	- For this, the index of the Fenwick Tree starts from 1.
+
+	``` text
+	psum[7] = tree[7] + tree[6] + tree[4]
+
+	by Binary Expression,
+
+		psum[111] = tree[111] + tree[110] + tree[100]
+	```
+
+- Time Complexity: O(lg(n))
+
+	``` c++
+	struct FenwickTree {
+		vector<int> tree;
+		
+		FenwickTree(int n) : tree(n+1) {}
+		
+		// return the partial sum of [0, pos]
+		int psum(int pos) {
+			++pos; // the index starts at 1
+			int ret = 0;
+			while (pos > 0) {
+				ret += tree[pos];
+				// flipping the last up-bit (1) for the next range
+				pos &= (pos - 1);
+			}
+			return ret;
+		}
+
+		// for update, a new value is added or subtracted at the desired position
+		void add(int pos, int val) {
+			++pos;
+			while (pos < tree.size()) {
+				tree[pos] += val;
+				pos += (pos & -pos);
+			}
+		}
+	};
+	```
+
+- The Fenwick Tree is used to obtain the range sum if a given array is frequently changed.
+
