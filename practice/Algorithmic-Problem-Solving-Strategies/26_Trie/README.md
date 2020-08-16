@@ -17,7 +17,7 @@
 	    /	\	   |
 	"BU"	<"BE">	  "TE"
 	  |	  |	   |    \
-	<"BUS"> <"BET">	<"TEA">	<"TEN">
+	<"BUS"> <"BET"> <"TEA"> <"TEN">
 	```
 
 - Each node has pointers of children and a bool variable, terminal.
