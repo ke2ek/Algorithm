@@ -16,11 +16,11 @@
 	- `Directed Graph` the end of edge has an arrow, which means that it is not possible to move to the opposite of an arrow.
 	- `Undirected Graph` it does not have arrows.
 	- `Weighted Graph` each edge includes weight, which means that it needs to cost as the weight when moving.
-	- `Multi Graph` there are two more edges between two vertexes.
+	- `Multi Graph` there are two or more edges between two vertexes.
 	- `Simple Graph` there is only one edge between two vetexs.
 	- `Bipartite Graph` there are edges in the vetexs belonging to each other group, where a group doest not have vertexes connected to each other.
 	- `Directed Ascyclic Graph (DAG)` there is not a path that starts at one point and returns to itself. (directed and no-cycle)
-- Some graph include two more property. i.e. Directed Weighted Graph, DAG, etc
+- Some graph include two or more property. i.e. Directed Weighted Graph, DAG, etc
 - **Path**. the set of edges.
 	- Usually, we describe an as numbers of connected two vertexes, such as (1, 3).
 	- So, we express the path as `path = { (1, 2), (2, 3), (3, 4), (4, 5) }`
