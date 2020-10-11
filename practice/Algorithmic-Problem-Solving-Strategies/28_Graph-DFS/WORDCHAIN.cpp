@@ -90,8 +90,8 @@ bool checkEuler() {
     return (plus1 == 1 && minus1 == 1) || (plus1 == 0 && minus1 == 0);
 }
 
-// In directed graph, to have the euler circuit,
-// in-degree of a vertex should be the same as out-degree of that.
+// O(n * A), where n is the number of words and A is the number of alphabets(=26)
+// time-complexity is dominated by getEulerCircuit()
 void solve() {
     cin >> n;
     vector<string> words(n);
@@ -102,7 +102,7 @@ void solve() {
         cout << "IMPOSSIBLE" << endl;
     } else {
         vector<int> circuit = getEulerPathOrCircuit();
-        // If it can not visit all the edges, fail.
+        // If it can not visit all the edges, the graph has two more components.
         if (circuit.size() != words.size() + 1) {
             cout << "IMPOSSIBLE" << endl;
         } else {
