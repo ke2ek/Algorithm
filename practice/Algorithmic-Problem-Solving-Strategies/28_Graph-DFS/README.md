@@ -165,7 +165,7 @@
 	
 	// Find out the cut vertex of subtrees of here.
 	// isRoot=true when calling first.
-	// Return the discovery order of the earliest found vertex
+	// Return the discovery order of the earliest found vertex(=the highest vertex)
 	// in the subtree that can be reached by the back edge.
 	int findCutVertex(int here, bool isRoot) {
 		discovered[here] = counter++;
@@ -184,7 +184,7 @@
 					isCutVertex[here] = true;
 				ret = min(ret, subtree);
 			} else {
-				ret	= min(ret, discovered[there])
+				ret = min(ret, discovered[there])
 			}
 		}
 		
@@ -202,6 +202,7 @@
 	- If the edge, (u, v), is the bridge of the graph, there should not be a back edge from _v_ to _u_. 
 - Check if there is _u_ in ancestors of _v_.
 	- What is the minimum discovery order of where we can reach by the back edges of _v_?
+	- If the order is the same as _u_, there is the back edge, (v, u).
 
 
 ## Separate [Strongly Connected Components](https://en.wikipedia.org/wiki/Strongly_connected_component)
@@ -212,4 +213,73 @@
 - Vertexes included in the same cycle belong to the same SCC.
 - For example, if a graph representing the city's road network of one-way roads is divided into two or more SCCs, it means that there are times when you cannot go from one point to another.
 - [Tarjan's SCC algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
-	- 
+	- It groups each vertex by SCC while searching (=DFS).
+	- It decides wether it cuts off an edge or not whenever the recursive function returns.
+		- At that time, it is able to get some information of subtrees.
+	- Assume that there is a tree edge, (u, v) and this edge will be removed.
+		- It means that there is not the back edge, (v, u).
+		- Thus, like Cut Vertex Algorithm, after searching the subtree of the root, _v_, and getting the highest vertex using only back edges, if the vertex is lower than _u_, the edge, (u, v), is going to be removed. 
+		- If the highest vertex of a subtree is equal to or higher than _u_, we should not remove the edge, (u, v), because there is the edge from _v_ to _u_.
+		- In directed graph, we need to consider cross edges. If a vertex found by a cross edge has already been included in a SCC, we would not be able to move to ancestors using the cross edge.
+		- If there is not a back edge in directed graph, check whether there is a vertex already visited, which has a cross edge to direct to vertexes of not being included in a SCC, or not. If it exists, the edge, (u, v), should not be removed.
+	- If the edge is removed, it will create a new SCC.
+	
+	``` c++
+	// Adjacency List
+	vector<vector<int> > adj;
+	// The component number of each vertex, starting at 0
+	// Vertexs in the same SCC has the same component number.
+	vector<int> sccId;
+	// The discovery order of each vertex
+	vector<int> discovered;
+	// Stack to save the number of each vertex
+	stack<int> st;
+	int sccCounter, vertexCounter;
+
+	// Return the minimum discovery order of the vertex, which it can be reached
+	// by a back edge or cross edge in a subtree of the root, here.
+	// (ignore the vertexes already grouped by SCC.)
+	int scc(int here) { // DFS
+		int ret = discovered[here]  = vertexCounter++;
+		st.push(here);
+
+		for (int i=0; i<adj[here].size(); i++) {
+			int there = adj[here][i];
+			// (here, there) = tree edge
+			if (discovered[there] == -1) {
+				ret = min(ret, scc(there));
+			} else if (sccId[there] == -1) {
+				// In case of the cross edge to `there` that can not be ignored,
+				ret = min(ret, discovered[there]);
+			}
+		}
+
+		// if it removes the edges going from here to ancestors.
+		if (ret == discovered[here]) {
+			// Group the vertexes of here's subtree by one component.
+			while (true) {
+				int t = st.top();
+				st.pop();
+				sccId[t] = sccCounter;
+				if (t == here) break;
+			}
+			sccCounter++;
+		}
+
+		return ret;
+	}
+
+	// Tarjan's Algorithm
+	// O(|V| + |E|)
+	vector<int> tarjanSCC() {
+		sccId = discovered = vector<int> (adj.size(), -1);
+		sccCounter = vertexCounter = 0;
+
+		for (int i=0; i<adj.size(); i++) {
+			if (discovered[i] == -1)
+				scc(i);
+		}
+
+		return sccId;
+	}
+	```
