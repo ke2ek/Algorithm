@@ -178,4 +178,3 @@
 	```
 
 - The Fenwick Tree is used to obtain the range sum if a given array is frequently changed.
-
