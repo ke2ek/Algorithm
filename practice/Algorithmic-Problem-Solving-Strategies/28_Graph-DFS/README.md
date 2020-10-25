@@ -32,10 +32,10 @@
 - Time complexity depends on the linking structure. 
 	- In the adjacency list, O(|V| + |E|)
 	- In the adjacency matrix, O(|V| * |V|)
-- Example: Check the connectivity of two vertexes.
+- Example: Check the connectivity of two vertices.
 	- After calling `dfs(Source)`, check `visited[Source][Destination]`.
 - Example: Count the connected subsets.
-	- If a graph consists of several components, where a component means the set of vertexes connected, such as a graph, each component is indicated like s1 = {a, b, f, g}, s2 = {c, d, e, h}.
+	- If a graph consists of several components, where a component means the set of vertices connected, such as a graph, each component is indicated like s1 = {a, b, f, g}, s2 = {c, d, e, h}.
 	- i.e. no one of the elements in the subset(s1) is connected to one of those in the subset(s2).
 	- It is solved by counting the number of calling `dfs(i)`.
 - Example: Dependency in Graph
@@ -51,7 +51,7 @@
 - Use every edge of a graph `exactly once`.
 - The source vertex is the same as the destination vertex.
 - Each vertex in an euler circuit has even edges if the graph is undirected.
-	- i.e. if one of vertexes has odd edges, the graph can not have an euler circuit.
+	- i.e. if one of vertices has odd edges, the graph can not have an euler circuit.
 - If the graph has two or more components(subsets), a component can be an euler circuit, but not the graph.
 - Time complexity = O(|V| * |E|)
 
@@ -72,7 +72,7 @@
 	}
 	```
 
-- _Euler Path_ starts and ends at different vertexes. Likewise, the path uses every edge of a graph exactly once.
+- _Euler Path_ starts and ends at different vertices. Likewise, the path uses every edge of a graph exactly once.
 - If you want to find out the euler path, add the edge from destination to source to be able to become the euler circuit, and then call `getEulerCircuit()`.
 - In case of the **directed graph**, refer to [WORDCHAIN](./WORDCHAIN.cpp)
 	- To be an euler circuit in a directed graph, the number of in-comming edges is the same as the number of out-going edges in each vertex.
@@ -92,13 +92,13 @@
 - How to classify an edge in a directed graph.
 	- **tree edge**. the edges included in the tree.
 	- **forward edge**. the edges, going from ancestors to offspring, excluded in the tree.
-		- It means that some two vertexes have several edges.
+		- It means that some two vertices have several edges.
 	- **back edge**. the edges, going from offspring to ancestors, excluded in the tree.
-	- **cross edge**. the edges between vertexes that are not related to ancestors and offspring.
+	- **cross edge**. the edges between vertices that are not related to ancestors and offspring.
 - How to classify an edge in an undirected graph.
 	- There is only **tree edge** in the graph.
 - PoC of Topological Sorting with edges
-	- Remind: topological sorting works by reversing the vertexes saved whenever dfs() ends.
+	- Remind: topological sorting works by reversing the vertices saved whenever dfs() ends.
 	- Assume that if `dfs(u)` ends earlier than `dfs(v)`, the edge, (u, v), can not exist.
 		- i.e. `dfs(v)` called `dfs(u)`.
 	- Proof.
@@ -117,7 +117,7 @@
 	vector<int> discovered;
 	// finished[i] = 1 if dfs(i) ended. otherwise 0
 	vector<int> finished;
-	// The number of the discovered vertexes
+	// The number of the discovered vertices
 	int counter;
 
 	void dfs2(int here) {
@@ -148,7 +148,7 @@
 
 ## Finding Cut Vertex
 
-- **Cut Vertex** in an undirected graph means the vertexes dividing the graph into two components when they are removed.
+- **Cut Vertex** in an undirected graph means the vertices dividing the graph into two components when they are removed.
 - Simple Solution: check the number of components whenever each vertex is removed.
 - Advanced Solution: using DFS spanning tree.
 	- Assume that the vertex, _u_, has several offspring. Then, if all of them have back edges to _u_, _u_ is not a cut vertex.
@@ -207,9 +207,9 @@
 
 ## Separate [Strongly Connected Components](https://en.wikipedia.org/wiki/Strongly_connected_component)
 
-- In a directed graph, two vertexes are included in SCC if they have bi-directed edges.
+- In a directed graph, two vertices are included in SCC if they have bi-directed edges.
 - DAG is made by gathering edges connecting to each SCC.
-- **condensation**. group the vertexes of the original graph by SCC, and create a new graph containing SCCs as vertexes.
+- **condensation**. group the vertices of the original graph by SCC, and create a new graph containing SCCs as vertices.
 - Vertexes included in the same cycle belong to the same SCC.
 - For example, if a graph representing the city's road network of one-way roads is divided into two or more SCCs, it means that there are times when you cannot go from one point to another.
 - [Tarjan's SCC algorithm](https://en.wikipedia.org/wiki/Tarjan%27s_strongly_connected_components_algorithm)
@@ -221,7 +221,7 @@
 		- Thus, like Cut Vertex Algorithm, after searching the subtree of the root, _v_, and getting the highest vertex using only back edges, if the vertex is lower than _u_, the edge, (u, v), is going to be removed. 
 		- If the highest vertex of a subtree is equal to or higher than _u_, we should not remove the edge, (u, v), because there is the edge from _v_ to _u_.
 		- In directed graph, we need to consider cross edges. If a vertex found by a cross edge has already been included in a SCC, we would not be able to move to ancestors using the cross edge.
-		- If there is not a back edge in directed graph, check whether there is a vertex already visited, which has a cross edge to direct to vertexes of not being included in a SCC, or not. If it exists, the edge, (u, v), should not be removed.
+		- If there is not a back edge in directed graph, check whether there is a vertex already visited, which has a cross edge to direct to vertices of not being included in a SCC, or not. If it exists, the edge, (u, v), should not be removed.
 	- If the edge is removed, it will create a new SCC.
 	
 	``` c++
@@ -238,7 +238,7 @@
 
 	// Return the minimum discovery order of the vertex, which it can be reached
 	// by a back edge or cross edge in a subtree of the root, here.
-	// (ignore the vertexes already grouped by SCC.)
+	// (ignore the vertices already grouped by SCC.)
 	int scc(int here) { // DFS
 		int ret = discovered[here]  = vertexCounter++;
 		st.push(here);
@@ -256,7 +256,7 @@
 
 		// if it removes the edges going from here to ancestors.
 		if (ret == discovered[here]) {
-			// Group the vertexes of here's subtree by one component.
+			// Group the vertices of here's subtree by one component.
 			while (true) {
 				int t = st.top();
 				st.pop();

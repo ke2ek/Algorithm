@@ -9,8 +9,8 @@
 	
 	vector<int> bfs(int start) {
 		vector<bool> discovered(adj.size(), false);
-		queue<int> q; // vertexes to visit next
-		vector<int> order; // visiting order of vertexes
+		queue<int> q; // vertices to visit next
+		vector<int> order; // visiting order of vertices
 		
 		discovered[start] = true;
 		q.push(start);
@@ -36,8 +36,8 @@
 		- undiscovered status
 		- discovered but not visited status
 		- already visited status
-	- There are vertexes of second status in the Queue.
-- Likewise DFS, **BFS Spanning tree** contains edges used to discover new vertexes.
+	- There are vertices of second status in the Queue.
+- Likewise DFS, **BFS Spanning tree** contains edges used to discover new vertices.
 - Time complexity depends on the linking structure. 
 	- In the adjacency list, O(|V| + |E|)
 	- In the adjacency matrix, O(|V| * |V|)
@@ -100,8 +100,8 @@
 	- Calculate the minimum movements.
 	- To solve it,
 		- Express each state of the game board(=puzzle) to a vertex. a.k.a **State Space**.
-		- The state space has 16! vertexes.
-		- Connect two vertexes when one movement changes from one state to other state.
+		- The state space has 16! vertices.
+		- Connect two vertices when one movement changes from one state to other state.
 		- Each vertex has at most 4 neighbors.
 	
 - **15-puzzle**. Simple solution: BFS
@@ -109,7 +109,7 @@
 	- In practice, the overall time complexity is proportional to the number of vertices that BFS visits.
 	- The most direct influence on the number of vertices that BFS visits is the shortest path, _d_, from the start vertex to the target vertex.
 	- Another factor is branching factor, _b_, which indicates how many times vertices increase each time the length of the path longs once.
-	- In this case, the number of vertexes increase 4 times theoretically because there are at most 4 neighbors.
+	- In this case, the number of vertices increase 4 times theoretically because there are at most 4 neighbors.
 	- Therefore, this solution is so much slow because its time complexity is O(b^d).
 
 	``` c++
@@ -205,10 +205,10 @@
 
 - **15-puzzle**. Advanced Solution: [Iteratively Deepening Search (IDS)](https://en.wikipedia.org/wiki/Iterative_deepening_depth-first_search)
 	- In IDS, a **depth-limited** version of depth-first search is run repeatedly with increasing depth limits until the goal is found.
-	- If the number of vertexes in a graph increases exponentially, we need to use Depth-First Search because DFS does not have to save the list of vertexes to visit so it can save much memory space. 
+	- If the number of vertices in a graph increases exponentially, we need to use Depth-First Search because DFS does not have to save the list of vertices to visit so it can save much memory space. 
 	- Its time complexity is `O(b^d)`.
 	- When the shortest path to target state is _d_ and branching factor is _b_, the number of visits is defined as `(d+1) * b^0 + d * b^1 + (d-1) * b^2 + ... + 2 * b^(d-1) + 1 * b^d`.
-	- Desc: The first start vertex (like root) is visited (d + 1) times. And then, there are _b_ vertexes and the each vertex is visited d times.
+	- Desc: The first start vertex (like root) is visited (d + 1) times. And then, there are _b_ vertices and the each vertex is visited d times.
 	- Its space complexity is `O(d)`, and it is more efficient than Bidirectional Search.
 
 	``` c++
