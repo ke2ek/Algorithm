@@ -195,4 +195,109 @@
     ```
 
 - Time Complexity: `O(|V|*|E|)`, where V is the # of vertices and E is the # of edges.
+- Example: [TIMETRIP](./TIMETRIP.cpp)
+
+
+## [Floyd-Warshall Algorithm](https://en.wikipedia.org/wiki/Floyd–Warshall_algorithm)
+
+- It finds shortest paths in a weighted graph with positive or negative edge weights (but with no negative cycles).
+- A single execution of the algorithm will find the lengths (summed weights) of shortest paths between **all pairs of vertices**.
+- Although it does not return details of the paths themselves, it is possible to reconstruct the paths with simple modifications to the algorithm.
+- Assume that `Ds(u, v)` is the shortest path from _u_ to _v_ via vertices of the set, _S_.
+    - If the path does not pass the vertex, _x_, the path can be defined as `Ds-x`.
+    - `Ds(u, v) = min(Ds-x(u, x) + Ds-x(x, v), Ds-x(u, v))`
+    - **Ds-x(u, x) + Ds-x(x, v)** means that it passes the vertex _x_ that is included in the set, _S_.
+    - Every edges in the shortest path should satisfy above expression.
+- Simple Implementation with Dynamic Programming
+    - Time/Space complexity: O(|V|^3).
+
+    ``` c++
+    // the number of the vertices
+    int V;
+    // adjacency list
+    int adj[MAX_V][MAX_V];
+    // C[k][u][v] = the length of the shortest path from u to v
+    //              via 0-th ~ k-th vertices in the given set, S.
+    int C[MAX_V][MAX_V][MAX_V];  
+    void allPairShortestPath1() {
+        for (int i = 0; i < V; i++)
+            for (int j = 0; j < V; j++)
+                if (i != j)
+                    C[0][i][j] = min(adj[i][j], adj[i][0] + adj[0][j]);
+                else
+                    C[0][i][j] = 0;
+
+        for (int k = 0; k < V; k++)
+            for (int u = 0; u < V; u++)
+                for (int v = 0; v < V; v++)
+                    C[k][u][v] = min(C[k-1][u][v], C[k-1][u][k] + C[k-1][k][v]);
+    }
+    // Notice that, in adjacency list, it need to set the largest value if there is not an edge.
+    ```
+
+- Advanced Implementation with Sliding Window in DP
+    - It saves memory capacity much by using the (k-1)-th array only, C[k-1].
+        - Just like C[k % 2] !! But we do not even need it.
+    - Space complexity: O(|V|^2)
+
+    ``` c++
+    int V;
+    int adj[MAX_V][MAX_V]; // adjacency list
+    void floyd() {
+        for (int i = 0; i < V; i++) adj[i][i] = 0;
+        for (int k = 0; k < V; k++)
+            for (int u = 0; u < V; u++)
+                for (int v = 0; v < V; v++)
+                    adj[u][v] = min(adj[u][v], adj[u][k] + adj[k][v]);
+    }
+
+    void optimizedFloyd() {
+        for (int i = 0; i < V; i++) adj[i][i] = 0;
+        for (int k = 0; k < V; k++) {
+            for (int u = 0; u < V; u++) {
+                if (adj[u][k] == INF) continue; // Save execution time about 20%.
+                for (int v = 0; v < V; v++)
+                    adj[u][v] = min(adj[u][v], adj[u][k] + adj[k][v]);
+            }
+        }
+    }
+    ```
+
+- How to get the vertices in the shortest path.
+
+    ``` c++
+    int V;
+    int adj[MAX_V][MAX_V];
+    int via[MAX_V][MAX_V];
+
+    void floyd2() {
+        for (int i = 0; i < V; i++) adj[i][i] = 0;
+        memset(via, -1, sizeof(via));
+        for (int k = 0; k < V; k++) {
+            for (int u = 0; u < V; u++) {
+                if (adj[u][k] == INF) continue; // Save execution time about 20%.
+                for (int v = 0; v < V; v++) {
+                    int cost = adj[u][k] + adj[k][v];
+                    if (adj[u][v] > cost) {
+                        via[u][v] = k;
+                        adj[u][v] = cost;
+                    }
+                }
+            }
+        }
+    }
+
+    // Calculate the shortest path from u to v.
+    void reconstruct(int u, int v, vector<int>& path) {
+        if (via[u][v] == -1) {
+            path.push_back(u);
+            if (u != v) path.push_back(v);
+        } else {
+            int k = via[u][v];
+            reconstruct(u, k, path);
+            path.pop_back(); // Protect duplicate of k
+            reconstruct(k, v, path);
+        }
+    }
+    ```
 
