@@ -98,14 +98,14 @@ int summ[103];
 // arr[i]+arr[i+1]+..+arr[j] = summ[j]-summ[i-1]
 
 void solution() {
-	return;
+    return;
 }
 
 int main(void) {
     int T;
     cin >> T;
     rep(i,1,T+1) {
-    	cout << "Case #" << tc << ": " << endl;
+    	cout << "Case #" << T << ": " << endl;
     	solution();
     }
     return 0;

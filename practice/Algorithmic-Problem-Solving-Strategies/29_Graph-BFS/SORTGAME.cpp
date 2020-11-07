@@ -27,7 +27,7 @@ void precalc(int n) {
         vector<int> here = q.front();
         q.pop();
         int cost = dist[here];
-		// Visiting next vertexes
+        // Visiting next vertexes
         for (int i=0; i<n; i++) {
             for (int j=i+2; j<=n; j++) {
                 reverse(here.begin() + i, here.begin() + j);

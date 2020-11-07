@@ -9,7 +9,7 @@ struct RNG {
     RNG(int _a, int _b) : a(_a), b(_b), seed(1983) {}
     int next() {
         int ret = seed;
-		// Notice that (long long) type casting is used to avoid integer overflow.
+        // Notice that (long long) type casting is used to avoid integer overflow.
         seed = ((seed * (long long)a) + b) % 20090711;
         return ret;
     }
