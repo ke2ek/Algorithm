@@ -69,7 +69,7 @@
         // Note that path compression optimization have been applied.
         int find(int u) {
             if (u == parent[u]) return u;
-            return parent[u] = find(parent[u]); // duplicated operation is removed.
+            return parent[u] = find(parent[u]); // duplicate operation is removed.
         }
 
         void merge(int u, int v) {
@@ -77,7 +77,7 @@
             v = find(v);
             if (u == v) return;
             if (rank[u] > rank[v]) swap(u, v);
-            // always rank[v] >= rank[u], where rank means the height of each tree.
+            // always rank[u] <= rank[v], where rank means the height of each tree.
             parent[u] = v;
             if (rank[u] == rank[v]) rank[v]++;
         }
