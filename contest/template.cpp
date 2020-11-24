@@ -97,16 +97,17 @@ int D[104][54];
 int summ[103];
 // arr[i]+arr[i+1]+..+arr[j] = summ[j]-summ[i-1]
 
-void solution() {
-    return;
+void solve() {
+    int ret = 0;
+    cout << ret << endl;
 }
 
 int main(void) {
     int T;
     cin >> T;
     rep(i,1,T+1) {
-    	cout << "Case #" << T << ": " << endl;
-    	solution();
+        cout << "Case #" << i << ": ";
+        solve();
     }
     return 0;
 }
