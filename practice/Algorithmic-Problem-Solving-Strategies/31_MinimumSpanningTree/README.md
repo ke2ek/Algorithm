@@ -5,6 +5,7 @@
 - [Spanning Tree](https://en.wikipedia.org/wiki/Spanning_tree) of an undirected graph G is a subgraph that is a tree which includes all of the vertices of G, with a minimum possible number of edges.
     - There can be several spanning trees in a graph.
     - Spanning Tree does not have any cycle.
+    - # of edges in a spanning tree is (# of vertices - 1).
 - [Minimum Spanning Tree, MST](https://en.wikipedia.org/wiki/Minimum_spanning_tree), is a spanning tree whose sum of edge weights is as small as possible.
     - MST problem is finding the most inexpensive graph in an edge-weighted undirected graph.
 
@@ -14,7 +15,7 @@
 - It is a `greedy algorithm` in graph theory as in each step it **adds the next lowest-weight edge** that will not form a cycle to the minimum Spanning Tree.
     - First, sort every edges by weight ascending.
     - Second, add sorted edges one by one to the current MST, where an edge to be added should not form any cycle.
-    - Third, keep adding edges Until there are all vertices in the MST. 
+    - Third, keep adding edges until there are all vertices in the MST. 
 - How to know if a new edge forms a cycle.
     - [Disjoint Set](https://en.wikipedia.org/wiki/Disjoint-set_data_structure)
     - If two vertices of an edge to be added are already included in the same set, abandon the edge.
@@ -88,7 +89,7 @@
 
 - It operates by building this tree one vertex at a time, from an arbitrary starting vertex, at each step **adding the cheapest possible connection** from the tree to another vertex. 
 - Likewise, it is a `greedy algorithm` that finds a minimum spanning tree for a weighted undirected graph.
-- How to find the vertex that will be added next.
+- How to choose the vertex that will be added next.
     - `minWeight[]` saves the minimum weights of edges connecting the current MST with other vertices.
     - It updates `minWeight[]` by visiting the adjacency edges from a new vertex whenever it adds the vertex to the MST.
 - Time Complexity: `O(|V|^2 + |E|)`
@@ -106,34 +107,34 @@
     // Return the sum of weights in the MST.
     int prim(vector<pair<int, int> >& selected) {
         selected.clear();
-        // added[i] means if i-th vertex is added.
+        // added[i] = true if i-th vertex is added.
         vector<bool> added(V, false);
-        // minWeight[i] is the edge with the minimum weight among adjacency edges of i-th vertex.
+        // minWeight[i] = the minimum weight among adjacency edges of i-th vertex.
         vector<int> minWeight(V, INF);
-        // parent[i] is the opposite vertex of the edge matching minWeight[i].
+        // parent[i] = the opposite vertex of the edge matching minWeight[i].
         vector<int> parent(V, -1);
         // the sum of weights
         int ret = 0;
         // Add 0-th vertex.
         minWeight[0] = parent[0] = 0;
         for (int iter = 0; iter < V; iter++) {
-            // Find the next vertex.
-            int u = -1;
+            // Find the next vertex which should not be included in the current MST.
+            int next = -1;
             for (int v = 0; v < V; v++)
-                if (!added[v] && (u == -1 || minWeight[u] > minWeight[v]))
-                    u = v;
-            // Add (parent[u], u) to the MST.
-            if (parent[u] != u)
-                selected.push_back(make_pair(parent[u], u));
-            ret += minWeight[u];
-            added[u] = true;
-            // Update minWeightv.
-            // Visit adjacency edges of u.
-            for (int i = 0; i < adj[u].size(); i++) {
-                int v = adj[u][i].first;
-                int weight = adj[u][i].second;
+                if (!added[v] && (next == -1 || minWeight[next] > minWeight[v]))
+                    next = v;
+            // Add (parent[next], next) to the MST if the edge is not included.
+            if (parent[next] != next)
+                selected.push_back(make_pair(parent[next], next));
+            ret += minWeight[next];
+            added[next] = true;
+            // Update minWeight and visit adjacency edges of next.
+            for (int i = 0; i < adj[next].size(); i++) {
+                int v = adj[next][i].first;
+                int weight = adj[next][i].second;
+                // Choose the edge with the minimum weight.
                 if (!added[v] && minWeight[v] > weight) {
-                    parent[v] = u;
+                    parent[v] = next;
                     minWeight[v] = weight;
                 }
             }
