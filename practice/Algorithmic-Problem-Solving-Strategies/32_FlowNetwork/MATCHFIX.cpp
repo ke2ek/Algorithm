@@ -30,12 +30,10 @@ void makeNetwork() {
         capacity[m][M + player2 + 1] = 1;
     }
     
-    // Initialize
     totalFlow = 0;
 }
 
 void networkFlow(int source, int sink) {
-    //int totalFlow = 0;
     while (true) {
         vector<int> parent(V, -1);
         queue<int> q;
