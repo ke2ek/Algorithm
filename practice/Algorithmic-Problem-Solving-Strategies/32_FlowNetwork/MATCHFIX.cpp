@@ -45,8 +45,6 @@ void networkFlow(int source, int sink) {
             int u = q.front();
             q.pop();
             for (int v = 0; v < V; v++) {
-                //cout << "capacity[" << u << "][" << v << "] = " << capacity[u][v] << endl;
-                //cout << "flow[" << u << "][" << v << "] = " << flow[u][v] << endl;
                 if ((capacity[u][v] - flow[u][v]) > 0 && parent[v] == -1) {
                     q.push(v);
                     parent[v] = u;
