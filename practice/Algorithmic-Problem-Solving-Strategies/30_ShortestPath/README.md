@@ -50,7 +50,7 @@
 
             // Visit all neighbors.
             for (int i=0; i<adj[here].size(); i++) {
-                int there = adj[here][i];
+                int there = adj[here][i].first;
                 int nextDist = cost + adj[here][i].second;
                 // If it finds shorter path,
                 if (dist[there] > nextDist) {
