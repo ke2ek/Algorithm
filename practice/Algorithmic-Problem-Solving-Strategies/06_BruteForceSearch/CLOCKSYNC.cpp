@@ -22,14 +22,14 @@ vector<int> switches[10] = {
 int clocks[16];
 int best;
 
-void go(int pos, int delta) {
+void push(int pos, int delta) {
     for (auto &j : switches[pos]) {
         clocks[j] = (clocks[j] + delta) % 12;
         if (clocks[j] == 0) clocks[j] = 12;
     }
 }
 
-void dfs(int pos, int cnt) {
+void search(int pos, int cnt) {
     if (best < cnt) return;
     if (all_of(clocks, clocks + 16, [](int x){ return x == 12; })) {
         if (best > cnt) best = cnt;
@@ -37,18 +37,18 @@ void dfs(int pos, int cnt) {
     }
     if (pos == 10) return;
     
-    dfs(pos + 1, cnt);
+    search(pos + 1, cnt);
     for (int i = 0; i < 3; i++) {
-        go(pos, deltas[i]);
-        dfs(pos + 1, cnt + i + 1);
-        go(pos, -deltas[i]);
+        push(pos, deltas[i]);
+        search(pos + 1, cnt + i + 1);
+        push(pos, -deltas[i]);
     }
 }
 
 void solve() {
     for (int i = 0; i < 16; i++) cin >> clocks[i];
     best = INF;
-    dfs(0, 0);
+    search(0, 0);
     cout << (best == INF ? -1 : best) << endl;
 }
 
