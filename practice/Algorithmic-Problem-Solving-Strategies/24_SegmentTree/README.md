@@ -2,30 +2,31 @@
 
 ## Basic
 
-- It is used to answer fastly questions about the specific range of an array.
-    - for instance, finding a minimum value of the range.
-- Segment Tree represents each range of given array as a node of a binary tree.
+- In computer science, a [segment tree](https://en.wikipedia.org/wiki/Segment_tree), also known as a statistic tree, is a `tree data structure` used for storing information about **intervals**, or segments.
+- It allows querying which of the stored segments contain a given point.
+- It is used to answer fastly questions about the specific range in an 1-D array.
+    - for instance, finding the minimum value in the given range.
+- It represents each range of the given array as one node in a binary tree.
     - so, the root node always indicates the total range [0, n-1].
-    - left and right subtree indicate each half.
-    - leaf node means the range having the one size (only one element).
+    - left and right subtree indicate the half of the range.
+    - leaf node means the range having the one size (including only one element).
 
 
 ## Range Minimum Query
 
-- Finding a minimum value of the specific range.
-- Segment Tree usually becomes a fully binary tree.
+- Finding the minimum value of the specific range.
+- A segment tree is usually a fully binary tree.
     - In this case, it is better to represent to an array than a linked list, such as Heap.
-    - The size of the array is defined by `2*n`, where n is the number of elements.
-    - But, if _n_ is not the power of 2, _n_ should be the power of 2 larger than _n_. And then _n_ is multiplied by 2.
-    - So, memory space is wasted a little bit.
+    - The size of the array is defined by `2*n`, where _n_ is the number of elements.
+    - But, if _n_ is not the power of 2, we should change _n_ to the power of 2 larger than _n_. And then _n_ is multiplied by 2. So, memory space can be wasted a little bit.
     - Otherwise, just multiply n to 4. (`4*n`)
-- The query operation returns the minimum value as following the intersection range of the current finding range and the wanted range.
+- The query operation finds the minimum value by using the intersection of the current range and the required range.
     - `query(left, right, node, nodeLeft, nodeRight)`
-        - [left, right] = the wanted range
-        - [nodeLeft, nodeRight] = the current finding range
-    - if the intersection is empty, then return infinity because two range is not overlapped.
-    - if the intersection is [nodeLeft, nodeRight], then return the minimum value immediately because [left, right] includes the range.
-    - Otherwise, call recursively to children(subtrees).
+        - [left, right] = the required range
+        - [nodeLeft, nodeRight] = the current range
+    - If the intersection is empty, then return infinity because two range is not overlapped.
+    - If the intersection is [nodeLeft, nodeRight], then return the minimum value immediately because it means that the range was included in [left, right].
+    - Otherwise, call recursively after dividing the current range into half.
 
     ``` c++
     const int INT_MAX = numeric_limits<int>::max();
@@ -85,20 +86,22 @@
     };
     ```
 
-- Example: get the most frequency of an element in the specific range of sequence ordered by ascending.
-    - (General) Case 1. found the most frequency in the left subtree.
-    - (General) Case 2. found the most frequency in the right subtree.
-    - (Exception) Case 3. found the most frequency in two subtrees. i.e. the frequent number is the same in both ranges.
-        - if left=[1,2,2,2], right=[2,2,2,3], then returns the freq # of left + the freq # of right = 3 + 3 = 6
-        - if left=[1,1,1,2,2], right=[2,2,3,3,3], then returns the freq # of 2 = 4 (is larger than each the freq # of two ranges)
-    - In exception case, need to consider extra information for summing two answer.
+- Example: get the most frequency of the given element in the specific range of the ascending ordered sequence.
+    - (General) Case 1. there is the most frequency in the left subtree.
+    - (General) Case 2. there is the most frequency in the right subtree.
+    - (Exception) Case 3. there is the most frequency in both subtrees. i.e. the most frequent numbers in both ranges are the same.
+        - When left=[1,2,2,2], right=[2,2,2,3], the freq # of left + the freq # of right = 3 + 3 = 6.
+        - When left=[1,1,1,2,2], right=[2,2,3,3,3], the freq # of 2 in both ranges = 2 + 2 = 4, which is larger than the most frequency[=3] of each range.
+    - In exception case, notice the additional information when accumulating two answer.
+      - The right-most number, 2, in the left sub-range is the same as the left-most number, 2, in the right sub-range.
+      - So, it is able to calculate the most frequency by comparing the size and most-frequency of each range.
 
     ``` c++
     struct RangeResult {
         int size; // the size of the range
         int mostFrequent; // the most frequency of the range
-        int leftNumber, leftFreq;
-        int rightNumber, rightFreq;
+        int leftNumber, leftFreq; // left-most number, its frequency
+        int rightNumber, rightFreq; // right-most number, its frequency
     }
 
     RangeResult merge(const RangeResult& a, const RangeResult& b) {
@@ -107,17 +110,20 @@
         ret.leftNumber = a.leftNumber;
         ret.leftFreq = a.leftFreq;
 
+        // ex) a=[1,1,1,1], b=[1,2,2,2] -> merge
         if (a.size == a.leftFreq && a.leftNumber == b.leftNumber)
             ret.leftFreq += b.leftFreq;
 
         ret.rightNumber = b.rightNumber;
         ret.rightFreq = b.rightFreq;
 
+        // ex) a=[1,2,2,2], b=[2,2,2,2] -> merge
         if (b.size == b.rightFreq && a.rightNumber == b.rightNumber)
             ret.rightFreq += a.rightFreq;
 
         ret.mostFrequent = max(a.mostFrequent, b.mostFrequent);
 
+        // exception case
         if (a.rightNumber == b.leftNumber)
             ret.mostFrequent = max(ret.mostFrequent, a.rightFreq + b.leftFreq);
 
@@ -129,14 +135,48 @@
 ## [Fenwick Tree or Binary Indexed Tree](https://en.wikipedia.org/wiki/Fenwick_tree)
 
 - It is used to calculate **range sum** fastly using **partial sum**.
-- Also, it saves memory space than the Segment Tree.
-    - In the Segment Tree, each parent node requires both children to calculate the sum of their own range.
-    - But, in a Fenwick Tree, the sum of range [i, j] can be calculated by subtracting psum[i-1] from psum[j], where _psum[i]_ is the partial sum from 0 to i.
-    - It means to need only one subtree to calculate the sum of its own range.
-- Since the subtrees differ by two times each, it is easy and fast to find the upper or lower section by expressing the index of a range in binary numbers.
-- Example
+- Also, it saves memory space than a segment tree.
+    - In a segment tree, each parent node needs both children to calculate the sum of its own range.
+    - But, in the Fenwick Tree, the sum of range [i, j] can be calculated by subtracting `psum[i-1]` from `psum[j]`, where `psum[i]` is the partial sum from 0 to i.
+    - It means to need **only one subtree** to calculate the sum in a fenwick tree.
+
+- Reference: https://cp-algorithms.com/data_structures/fenwick.html
+
+    ![fenwick](https://raw.githubusercontent.com/e-maxx-eng/e-maxx-eng/master/img/binary_indexed_tree.png)
+
+- Since the size difference between each node and its subtree is twice, each index in a fenwick tree can be represented as a **binary number** so that it is easier to find the lower or upper section.
+- Example: given an 1-D array, A, `tree[i]` is the sum of the range in which there is right-most number, `A[i]`.
+    - In this case, the index of a fenwick tree starts at 1.
+
+    ``` text
+    [A]
+
+    | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
+
+    [Fenwick Tree]
+
+    |-----------------------------8-|
+    |-------------4-|
+    |-----2-|       |-----6-|
+    |-1-|   |-3-|   |-5-|   |-7-|   |
+
+    The binary number of 8 is 1000.
+    The binary number of 4 is 100.
+    The binary number of 2 is 10.
+    The binary number of 1 is 1.
+    
+    The range-length of 8 is 2^3 = 8
+        because of the number of zero in the binary is 3 (8->1000).
+    The range-length of 7 is 2^0 = 1.
+        because of the number of zero in the binary is 0 (7->111).
+    The range-length of 6 is 2^1 = 2.
+        because of the number of zero in the binary is 1 (6->110).
+    The range-length of 4 is 2^2 = 4.
+        because of the number of zero in the binary is 2 (4->100).
+    ```
+
+    - We could easily get the length and the index of sub-range with the binary number.
     - Notice that the range to be added can be found by subtracting the last 1 bit (LSB) of each binary number.
-    - For this, the index of the Fenwick Tree starts from 1.
 
     ``` text
     psum[7] = tree[7] + tree[6] + tree[4]
@@ -146,7 +186,7 @@
         psum[111] = tree[111] + tree[110] + tree[100]
     ```
 
-- Time Complexity: O(lg(n))
+- Time Complexity: `O(lg(n))`
 
     ``` c++
     struct FenwickTree {
@@ -154,19 +194,19 @@
         
         FenwickTree(int n) : tree(n+1) {}
         
-        // return the partial sum of [0, pos]
+        // Return the partial sum of [0, pos].
         int psum(int pos) {
-            ++pos; // the index starts at 1
+            ++pos; // 1-indexed.
             int ret = 0;
             while (pos > 0) {
                 ret += tree[pos];
-                // flipping the last up-bit (1) for the next range
+                // Flip the last up-bit (1) to get the next range.
                 pos &= (pos - 1);
             }
             return ret;
         }
 
-        // for update, a new value is added or subtracted at the desired position
+        // Update if a new value is added or subtracted at the given position
         void add(int pos, int val) {
             ++pos;
             while (pos < tree.size()) {
@@ -177,4 +217,4 @@
     };
     ```
 
-- The Fenwick Tree is used to obtain the range sum if a given array is frequently changed.
+- The Fenwick Tree is used to obtain the **range sum** if the given array is frequently changed.
