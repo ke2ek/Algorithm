@@ -140,7 +140,7 @@
         - i.e. A[j] = the beginning position of the j-th suffix after sorting
 - It is used to search for a substring by taking advantage of the string N is the prefix of a substring, a suffix of the string H, if N is included in H.
 - Naive method generating the suffix array.
-    - Given a string like "aaa...aaa", the time complexity is O(n^2 * lg(n)) in case n is the length of given string.
+    - Given a string like "aaa...aaa", the time complexity is `O(n^2 * lg(n))` in case n is the length of given string.
     
     ``` c++
     // Given i, j are the beginning position of two suffixes,
@@ -211,8 +211,8 @@
         vector<int> perm(n);
         for (int i = 0; i < n; i++) perm[i] = i; // suffix array
         while (t < n) {
-            // group[] have been operated based on the first t letters.
-            // Sort `perm` again based on the first 2*t letters.
+            // group[] has been calculated using the first t letters.
+            // After that, sort `perm` again using the first 2*t letters.
             Comparator compareUsing2T(group, t);
             sort(perm.begin(), perm.end(), compareUsing2T);
             t *= 2;
